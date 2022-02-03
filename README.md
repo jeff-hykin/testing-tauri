@@ -86,3 +86,8 @@ Copyright (c) 2021 Valmisson Grizorte.
 [src-tauri]: https://github.com/valmisson/tauri-app-template/tree/main/packages/src-tauri
 [src-renderer]: https://github.com/valmisson/tauri-app-template/tree/main/packages/src-renderer
 [generate]: https://github.com/valmisson/tauri-app-template/generate
+
+
+# Setup
+
+Everything is detailed in the `documentation/setup.md`!
