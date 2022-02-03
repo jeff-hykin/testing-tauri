@@ -129,6 +129,21 @@ from = "559cf76fa3642106d9f23c9e845baf4d354be682"
 # comment these out in a situation such as deploying a project to a minimal server
 
 # 
+# Rust
+# 
+[[packages]]
+load = [ "rustc",]
+
+[[packages]]
+load = [ "libiconv",]
+
+[[packages]]
+load = [ "rustup",]
+
+[[packages]]
+load = [ "cargo",]
+
+# 
 # Linux
 # 
 [[packages]]
