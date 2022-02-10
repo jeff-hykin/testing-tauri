@@ -65,10 +65,6 @@ from = "860b56be91fb874d48e23a950815969a7b832fbc"
 # from = "a765beccb52f30a30fee313fbae483693ffe200d" 
 
 [[packages]]
-load = [ "nodePackages", "pnpm", ]
-from = "860b56be91fb874d48e23a950815969a7b832fbc"
-
-[[packages]]
 load = [ "nodePackages", "yarn", ]
 from = "860b56be91fb874d48e23a950815969a7b832fbc"
 
@@ -205,6 +201,11 @@ onlyIf = [ [ "stdenv", "isDarwin",],]
 
 [[packages]]
 load = [ "darwin", "apple_sdk", "frameworks", "AppKit" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "WebKit" ]
 asNativeBuildInput = true
 onlyIf = [ [ "stdenv", "isDarwin",],]
 

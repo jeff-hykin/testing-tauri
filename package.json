@@ -33,5 +33,6 @@
   },
   "engines": {
     "node": ">=14.16.x"
-  }
+  },
+  "dependencies": {}
 }

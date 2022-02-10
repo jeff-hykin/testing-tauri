@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 cd "$FORNIX_FOLDER"
+
 yarn install
 yarn run dev
-# cargo run
