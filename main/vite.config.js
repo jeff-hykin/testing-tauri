@@ -1,1 +1,1 @@
-../packages/src-renderer/vite.config
+../packages/src-renderer/vite.config.js

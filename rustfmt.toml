@@ -1,1 +1,1 @@
-../packages/src-tauri/rustfmt.toml
+./packages/src-tauri/rustfmt.toml
