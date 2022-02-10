@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
 cd "$FORNIX_FOLDER"
-
 yarn install
-yarn run dev
+
+# frontend
+cd "$FORNIX_FOLDER/packages/src-renderer"
+yarn run vite
+
+# backend
+cd "$FORNIX_FOLDER/packages"
+tauri dev "$@"

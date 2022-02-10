@@ -39,6 +39,14 @@
 
 # [[ you can add tools for your project right here or at the bottom ]]
 
+# for building
+[[packages]]
+load = [ "perl",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "bless",]
+
 # 
 # Node.js
 # 
