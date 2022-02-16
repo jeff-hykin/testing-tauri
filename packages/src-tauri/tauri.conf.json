@@ -5,9 +5,7 @@
   },
   "build": {
     "distDir": "../src-renderer/dist",
-    "devPath": "http://localhost:3000",
-    "beforeDevCommand": "yarn dev:renderer",
-    "beforeBuildCommand": "yarn build:renderer"
+    "devPath": "http://localhost:3000"
   },
   "tauri": {
     "bundle": {

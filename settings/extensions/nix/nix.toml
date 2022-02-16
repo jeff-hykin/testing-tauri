@@ -69,12 +69,12 @@ load = [ "libsoup",]
 
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
-load = [ "gtk4",]
-# from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
+load = [ "gtk3",]
+from = "e1c6965beb89e861ec5b4f2d9d75c89f8bc8bfa8"
 
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
-load = [ "gnome", "webkitgtk",]
+load = [ "webkitgtk",]
 
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]

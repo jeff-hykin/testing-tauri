@@ -16,7 +16,7 @@
     "build:renderer": "cd packages/src-renderer && yarn build",
     "lint": "cd packages/src-renderer && yarn lint",
     "generate-icons": "cd packages && tauri icon src-tauri/app-icon.png",
-    "postinstall": "yarn generate-icons"
+    "#postinstall": "yarn generate-icons"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.0.0-beta.10",

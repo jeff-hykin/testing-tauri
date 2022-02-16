@@ -46,6 +46,15 @@ let
         targets = [
             "wasm32-unknown-unknown"
             "x86_64-unknown-linux-gnu"
+            # wasm32-unknown-unknown    # wasm
+            # aarch64-unknown-linux-gnu # ARM64 Linux (kernel 4.2, glibc 2.17+) 1
+            # i686-pc-windows-gnu       # 32-bit MinGW (Windows 7+)
+            # i686-pc-windows-msvc      # 32-bit MSVC (Windows 7+)
+            # i686-unknown-linux-gnu    # 32-bit Linux (kernel 2.6.32+, glibc 2.11+)
+            # x86_64-apple-darwin	      # 64-bit macOS (10.7+, Lion+)
+            # x86_64-pc-windows-gnu     # 64-bit MinGW (Windows 7+)
+            # x86_64-pc-windows-msvc    # 64-bit MSVC (Windows 7+)
+            # x86_64-unknown-linux-gnu  # 64-bit Linux (kernel 2.6.32+, glibc 2.11+)
         ];
     });
     
@@ -71,7 +80,6 @@ let
             main.packages.atk
             main.packages.gdk-pixbuf
             main.packages.libsoup
-            main.packages.gtk3
             main.packages.webkitgtk
             main.packages.librsvg
             main.packages.patchelf
@@ -82,8 +90,9 @@ let
             then
                 true # add important (LD_LIBRARY_PATH, PATH, etc) nix-Linux code here
                 # export EXTRA_CCFLAGS="$EXTRA_CCFLAGS:-I/usr/include"
+                export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${main.makeLibraryPath [ main.packages.webkitgtk ]}"
                 export CXXFLAGS="$CXXFLAGS:-DGLIB_SCHEMAS_DIR=${main.packages.glib.getSchemaPath main.packages.gsettings-desktop-schemas}"
-                export XDG_DATA_DIRS="$XDG_DATA_DIRS:${main.packages.glib.getSchemaPath main.packages.gsettings-desktop-schemas}"
+                export XDG_DATA_DIRS="$XDG_DATA_DIRS:${main.packages.gsettings-desktop-schemas}:${main.packages.gsettings-desktop-schemas}/share:${main.packages.glib.getSchemaPath main.packages.gsettings-desktop-schemas}:${main.packages.glib.getSchemaPath main.packages.gsettings-desktop-schemas}/..:${main.packages.glib.getSchemaPath main.packages.gsettings-desktop-schemas}/../..:${main.packages.glib.getSchemaPath main.packages.gsettings-desktop-schemas}/../../.."
             fi
         '';
         # for python with CUDA 
