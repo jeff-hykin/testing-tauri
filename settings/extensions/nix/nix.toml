@@ -184,17 +184,18 @@ from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
 # 
 # Rust
 # 
-[[packages]]
-load = [ "rustc",]
+# [[packages]]
+# load = [ "rustc",]
+
+# [[packages]]
+# load = [ "rustup",]
+
+# [[packages]]
+# load = [ "cargo",]
 
 [[packages]]
 load = [ "libiconv",]
 
-[[packages]]
-load = [ "rustup",]
-
-[[packages]]
-load = [ "cargo",]
 
 # 
 # Linux

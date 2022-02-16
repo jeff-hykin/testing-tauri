@@ -32,7 +32,7 @@ let
     mainPackagesIncludingRust = (main.import
         # <nixpkgs> but pinned
         (main.fetchTarball
-            ({url="https://github.com/NixOS/nixpkgs/archive/7e9b0dff974c89e070da1ad85713ff3c20b0ca97.tar.gz";})
+            ({url="https://github.com/NixOS/nixpkgs/archive/c82b46413401efa740a0b994f52e9903a4f6dcd5.tar.gz";})
         )
         ({
             config = {};
@@ -45,6 +45,7 @@ let
     rust = (rustChannel.rust.override {
         targets = [
             "wasm32-unknown-unknown"
+            "x86_64-unknown-linux-gnu"
         ];
     });
     
