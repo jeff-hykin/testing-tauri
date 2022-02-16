@@ -21,6 +21,33 @@ let
         )
     );
     
+    # 
+    # Rust
+    # 
+    mozOverlay = (main.import
+        (main.fetchTarball
+            ({url="https://github.com/mozilla/nixpkgs-mozilla/archive/7c1e8b1dd6ed0043fb4ee0b12b815256b0b9de6f.tar.gz";})
+        )
+    );
+    mainPackagesIncludingRust = (main.import
+        # <nixpkgs> but pinned
+        (main.fetchTarball
+            ({url="https://github.com/NixOS/nixpkgs/archive/7e9b0dff974c89e070da1ad85713ff3c20b0ca97.tar.gz";})
+        )
+        ({
+            config = {};
+            overlays = [ mozOverlay ];
+        })
+    );
+    rustChannel = mainPackagesIncludingRust.rustChannelOf {
+        channel = "stable";
+    };
+    rust = (rustChannel.rust.override {
+        targets = [
+            "wasm32-unknown-unknown"
+        ];
+    });
+    
     # just a helper
     emptyOptions = ({
         buildInputs = [];
@@ -32,7 +59,22 @@ let
     # Linux Only
     #
     linuxOnly = if main.stdenv.isLinux then ({
-        buildInputs = [];
+        buildInputs = [
+            rust
+            main.packages.pkgconfig
+            main.packages.openssl
+            main.packages.sass
+            main.packages.glib
+            main.packages.cairo
+            main.packages.pango
+            main.packages.atk
+            main.packages.gdk-pixbuf
+            main.packages.libsoup
+            main.packages.gtk3
+            main.packages.webkitgtk
+            main.packages.librsvg
+            main.packages.patchelf
+        ];
         nativeBuildInputs = [];
         shellCode = ''
             if [[ "$OSTYPE" == "linux-gnu" ]] 
@@ -109,7 +151,7 @@ let
     # Mac Only
     # 
     macOnly = if main.stdenv.isDarwin then ({
-        buildInputs = [];
+        buildInputs = [ rust ];
         nativeBuildInputs = [];
         shellCode = ''
             if [[ "$OSTYPE" = "darwin"* ]] 
