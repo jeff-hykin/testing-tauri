@@ -38,7 +38,9 @@ let
             if [[ "$OSTYPE" == "linux-gnu" ]] 
             then
                 true # add important (LD_LIBRARY_PATH, PATH, etc) nix-Linux code here
-                export EXTRA_CCFLAGS="$EXTRA_CCFLAGS:-I/usr/include"
+                # export EXTRA_CCFLAGS="$EXTRA_CCFLAGS:-I/usr/include"
+                export CXXFLAGS="$CXXFLAGS:-DGLIB_SCHEMAS_DIR=${main.packages.glib.getSchemaPath main.packages.gsettings-desktop-schemas}"
+                export XDG_DATA_DIRS="$XDG_DATA_DIRS:${main.packages.glib.getSchemaPath main.packages.gsettings-desktop-schemas}"
             fi
         '';
         # for python with CUDA 
@@ -139,8 +141,8 @@ in
             ${macOnly.shellCode}
             
             # provide access to ncurses for nice terminal interactions
-            export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${main.packages.ncurses}/lib"
-            export LD_LIBRARY_PATH="${main.makeLibraryPath [ main.packages.glib ] }:$LD_LIBRARY_PATH"
+            # export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${main.packages.ncurses}/lib"
+            # export LD_LIBRARY_PATH="${main.makeLibraryPath [ main.packages.glib ] }:$LD_LIBRARY_PATH"
             
             if [ "$FORNIX_DEBUG" = "true" ]; then
                 echo "finished: 'shellHook' inside the 'settings/extensions/nix/shell.nix' file"

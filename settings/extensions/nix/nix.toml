@@ -47,6 +47,55 @@ load = [ "perl",]
 onlyIf = [ [ "stdenv", "isLinux",],]
 load = [ "bless",]
 
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "cairo",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "pango",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "atk",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "gdk-pixbuf",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "libsoup",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "gtk4",]
+# from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "gnome", "webkitgtk",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "sass",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "librsvg",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "patchelf",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "gnome3", "dconf",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "gsettings-desktop-schemas" ]
+
 # 
 # Node.js
 # 
@@ -111,15 +160,15 @@ from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
 
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
-load = [ "glib",]
-asNativeBuildInput = true
-from = "528d35bec0cb976a06cc0e8487c6e5136400b16b"
-
-[[packages]]
-onlyIf = [ [ "stdenv", "isLinux",],]
 load = [ "libglvnd",]
 asNativeBuildInput = true
 from = "559cf76fa3642106d9f23c9e845baf4d354be682"
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "glib",]
+#asNativeBuildInput = true
+from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
 
 # 
 # 
@@ -249,6 +298,9 @@ load = [ "openssh",]
 # 
 # 
 [[packages]]
+load = [ "fd",]
+
+[[packages]]
 load = [ "sd",]
 
 [[packages]]
@@ -295,6 +347,9 @@ load = [ "git-subrepo",]
 #
 
 [[packages]]
+load = [ "openssl",]
+
+[[packages]]
 load = [ "man",]
 
 [[packages]]
@@ -329,6 +384,9 @@ load = [ "zip",]
 
 [[packages]]
 load = [ "findutils",]
+
+[[packages]]
+load = [ "wget",]
 
 [[packages]]
 load = [ "curl",]
