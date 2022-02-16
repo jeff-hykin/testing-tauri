@@ -10,3 +10,34 @@ yarn run vite build
 # backend
 cd "$FORNIX_FOLDER/packages"
 tauri build  "$@"
+
+if [ "$OSTYPE" = "linux-gnu" ] 
+then
+    cd "$FORNIX_FOLDER/target.ignore/release/bundle/appimage"
+    set -euxo pipefail
+
+    export ARCH=x86_64
+
+    mkdir -p "tauri-app-template.AppDir"
+    cp -r ../appimage_deb/data/usr "tauri-app-template.AppDir"
+
+    cd "tauri-app-template.AppDir"
+
+    wget --no-check-certificate -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-x86_64 || wget --no-check-certificate -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-aarch64
+    chmod +x AppRun
+
+    cp "usr/share/icons/hicolor/512x512@2x/apps/tauri-app-template.png" .DirIcon
+    ln -s "usr/share/icons/hicolor/512x512@2x/apps/tauri-app-template.png" "tauri-app-template.png"
+
+    ln -s "usr/share/applications/tauri-app-template.desktop" "tauri-app-template.desktop"
+
+    cd ..
+
+    wget --no-check-certificate -4 -O linuxdeploy-plugin-gtk.sh "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
+    wget --no-check-certificate -4 -O linuxdeploy-x86_64.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+
+    chmod +x linuxdeploy-plugin-gtk.sh
+    chmod +x linuxdeploy-x86_64.AppImage
+
+    OUTPUT="tauri-app-template_0.1.0_amd64.AppImage" ./linuxdeploy-x86_64.AppImage --appdir "tauri-app-template.AppDir" --plugin gtk --output appimage
+fi
