@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 cd "$FORNIX_FOLDER"
+# make sure tauri is installed (pinned to tauri v1.0.0-rc.5, 2022-2-16)
+cargo install --git https://github.com/tauri-apps/tauri/ --rev 5a4e9efa0ad66edffdc27e7c7b89e4c120f4ba98 tauri-cli
+# add tauri to path
+export PATH="$FORNIX_HOME/.cargo/bin/:$PATH"
 yarn install
 
 # frontend
@@ -9,7 +13,7 @@ yarn run vite build
 
 # backend
 cd "$FORNIX_FOLDER/packages"
-tauri build  "$@"
+"$FORNIX_HOME/.cargo/bin/cargo-tauri" -- build "$@"
 
 if [ "$OSTYPE" = "linux-gnu" ] 
 then
