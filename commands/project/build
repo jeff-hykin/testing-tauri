@@ -6,6 +6,7 @@ cargo install --git https://github.com/tauri-apps/tauri/ --rev 5a4e9efa0ad66edff
 # add tauri to path
 export PATH="$FORNIX_HOME/.cargo/bin/:$PATH"
 yarn install
+yarn generate-icons
 
 # frontend
 cd "$FORNIX_FOLDER/packages/src-renderer"
@@ -13,35 +14,89 @@ yarn run vite build
 
 # backend
 cd "$FORNIX_FOLDER/packages"
-"$FORNIX_HOME/.cargo/bin/cargo-tauri" -- build "$@"
+"$FORNIX_HOME/.cargo/bin/cargo-tauri" -- build --verbose "$@"
 
 if [ "$OSTYPE" = "linux-gnu" ] 
 then
-    cd "$FORNIX_FOLDER/target.ignore/release/bundle/appimage"
-    set -euxo pipefail
 
+    set -ux pipefail
+    app_image_path="$FORNIX_FOLDER/target.ignore/release/bundle/appimage"
+    cd "$app_image_path"
+
+    # FIXME: extreme hack because I can't figure out how to make gtk respect XDG_DATA_DIRS
+    the_thing_that_should_have_schemas="/nix/store/24lgqdbdzy31k0i2dh6s51g2ayy6cpyl-glib-2.68.2/share/glib-2.0"
+    the_thing_that_does_have_schemas="/nix/store/yb0n3ff69rrxa4dd0dqc37zl93fwkzwh-gsettings-desktop-schemas-40.0/share/gsettings-schemas/gsettings-desktop-schemas-40.0/glib-2.0/"
+    export GSETTINGS_SCHEMA_DIR="$the_thing_that_does_have_schemas"
+    temp_folder="/tmp/glib-2.0/"
+    sudo rm -rf "$temp_folder"
+    cp -r "$the_thing_that_does_have_schemas" "$temp_folder"
+    # this loop is so stupidly complicated because of many inherent-to-shell reasons, for example: https://stackoverflow.com/questions/13726764/while-loop-subshell-dilemma-in-bash
+    __NESTED_WHILE_COUNTER=
+    for_each_item_in="$temp_folder"; [ -z "$__NESTED_WHILE_COUNTER" ] && __NESTED_WHILE_COUNTER=0;__NESTED_WHILE_COUNTER="$((__NESTED_WHILE_COUNTER + 1))"; trap 'rm -rf "$__temp_var__temp_folder"' EXIT; __temp_var__temp_folder="$(mktemp -d)"; mkfifo "$__temp_var__temp_folder/pipe_for_while_$__NESTED_WHILE_COUNTER"; (find "$for_each_item_in" ! -path "$for_each_item_in" -print0 2>/dev/null | sort -z > "$__temp_var__temp_folder/pipe_for_while_$__NESTED_WHILE_COUNTER" &); while read -d $'\0' each
+    do
+        sudo chmod u=rwx,g=rwx,o=rwx "$each"
+    done < "$__temp_var__temp_folder/pipe_for_while_$__NESTED_WHILE_COUNTER";__NESTED_WHILE_COUNTER="$((__NESTED_WHILE_COUNTER - 1))"
+    sudo rm "$the_thing_that_should_have_schemas"
+    sudo ln -s "$temp_folder" "$the_thing_that_should_have_schemas"
+    
     export ARCH=x86_64
+    
+    app_folder_name="tauri-app-template.AppDir"
+    app_folder="$app_image_path/$app_folder_name"
+    mkdir -p "$app_folder"
+    cp -r ../appimage_deb/data/usr "$app_folder"
 
-    mkdir -p "tauri-app-template.AppDir"
-    cp -r ../appimage_deb/data/usr "tauri-app-template.AppDir"
+    cd "$app_folder"
 
-    cd "tauri-app-template.AppDir"
-
-    wget --no-check-certificate -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-x86_64 || wget --no-check-certificate -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-aarch64
+    # wget --no-check-certificate -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-x86_64 || wget --no-check-certificate -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-aarch64
+    cp "$FORNIX_FOLDER/resources/AppRun-x86_64" "$PWD/"
     chmod +x AppRun
+    
+    cp "$app_folder/usr/share/icons/hicolor/512x512@2x/apps/tauri-app-template.png" .DirIcon 2>/dev/null
+    ln -s "$app_folder/usr/share/icons/hicolor/512x512@2x/apps/tauri-app-template.png" "tauri-app-template.png" 2>/dev/null
+    ln -s "$app_folder/usr/share/applications/tauri-app-template.desktop" "tauri-app-template.desktop" 2>/dev/null
 
-    cp "usr/share/icons/hicolor/512x512@2x/apps/tauri-app-template.png" .DirIcon
-    ln -s "usr/share/icons/hicolor/512x512@2x/apps/tauri-app-template.png" "tauri-app-template.png"
-
-    ln -s "usr/share/applications/tauri-app-template.desktop" "tauri-app-template.desktop"
-
-    cd ..
-
-    wget --no-check-certificate -4 -O linuxdeploy-plugin-gtk.sh "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
-    wget --no-check-certificate -4 -O linuxdeploy-x86_64.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+    cd "$app_image_path"
+    
+    # libfontconfig.so.1
+    # libfreetype.so.6
+    # libxcb.so.1.1.0
+    # libX11.so.6
+    # libz.so.1
+    # libgobject-2.0.so.0
+    # libharfbuzz.so.0
+    # libgpg-error.so.0
+    # libpangocairo-1.0.so.0
+    # libfribidi.so.0
+    # libSM.so.6
+    # libICE.so.6
+    export LD_LIBRARY_PATH="/nix/store/s5m2qfxli9qqfw844ga91vvkb2xzqz6b-glibc-2.33-62/lib/:$LD_LIBRARY_PATH:/nix/store/rdzgk7nkq9ax32m9gcmly4jhkgb6nq3j-fontconfig-2.13.94-lib/lib/:/nix/store/06yix2p8krcma80bx3c86408ns0lkahh-freetype-2.11.1/lib/:/nix/store/naz74anypqf0x9bjvnrlj9qfs5h9d5b7-libxcb-1.14/lib/:/nix/store/m6y2ffn4s45xg5ajq0b703alppyib9xq-libX11-1.6.5/lib/:/nix/store/0b0mijbd7mp8gcglmkkdr2775ki38x9v-zlib-1.2.11/lib/:/nix/store/xfd3rwkihsy29sapinwyrg9bnfl42cn3-glib-2.54.0/lib/:/nix/store/mkfdy0b2pxnmhrca4765470cffzpp0qj-harfbuzz-2.1.0/lib/:/nix/store/m50r25i8rj2wf2q4ybf7hhnqvhdqhjyv-libgpg-error-1.41/lib/:/nix/store/qdqfg56dawcl7y1hdwiaikvp6pmyrc15-pango-1.40.12/lib/:/nix/store/fsmv0j7735m5dc9k61i3fqdsk3717vpy-fribidi-1.0.5/lib/:/nix/store/y17bkmiyp1aiklyw0vy4sgksnpbpp80h-libSM-1.2.3/lib/:/nix/store/wsa09z2sy126na60ajx9s75vp26sliv5-libICE-1.0.10/lib/"
+    # libpthread.so.0
+    
+    # export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/nix/store/"
+    # wget --no-check-certificate -4 -O linuxdeploy-plugin-gtk.sh "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
+    # wget --no-check-certificate -4 -O linuxdeploy-x86_64.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+    cp "$FORNIX_FOLDER/resources/linuxdeploy-plugin-gtk.sh" "$PWD/"
+    cp "$FORNIX_FOLDER/resources/linuxdeploy-x86_64.AppImage" "$PWD/"
 
     chmod +x linuxdeploy-plugin-gtk.sh
     chmod +x linuxdeploy-x86_64.AppImage
-
+    
+    echo 'the_thing_that_should_have_schemas: '"$the_thing_that_should_have_schemas"
+    duplicate_of_schemas="$app_folder_name/$the_thing_that_should_have_schemas"
+    mkdir -p "$(dirname "$duplicate_of_schemas")"
+    if [ -e "$duplicate_of_schemas" ]
+    then
+        sudo rm -rf "$duplicate_of_schemas" 2>/dev/null || true
+    fi
+    sudo cp -r "$temp_folder" "$duplicate_of_schemas"
+    # make them writable
+    for_each_item_in="$duplicate_of_schemas"; [ -z "$__NESTED_WHILE_COUNTER" ] && __NESTED_WHILE_COUNTER=0;__NESTED_WHILE_COUNTER="$((__NESTED_WHILE_COUNTER + 1))"; trap 'rm -rf "$__temp_var__temp_folder"' EXIT; __temp_var__temp_folder="$(mktemp -d)"; mkfifo "$__temp_var__temp_folder/pipe_for_while_$__NESTED_WHILE_COUNTER"; (find "$for_each_item_in" ! -path "$for_each_item_in" -print0 2>/dev/null | sort -z > "$__temp_var__temp_folder/pipe_for_while_$__NESTED_WHILE_COUNTER" &); while read -d $'\0' each
+    do
+        sudo chmod u=rwx,g=rwx,o=rwx "$each"
+        sudo chown "$(whoami)" "$each"
+    done < "$__temp_var__temp_folder/pipe_for_while_$__NESTED_WHILE_COUNTER";__NESTED_WHILE_COUNTER="$((__NESTED_WHILE_COUNTER - 1))"
+    echo 'duplicate_of_schemas: '"$duplicate_of_schemas"
+    echo "-------HERE----------------------------"
     OUTPUT="tauri-app-template_0.1.0_amd64.AppImage" ./linuxdeploy-x86_64.AppImage --appdir "tauri-app-template.AppDir" --plugin gtk --output appimage
 fi

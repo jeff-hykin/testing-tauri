@@ -70,7 +70,7 @@ load = [ "libsoup",]
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
 load = [ "gtk3",]
-from = "e1c6965beb89e861ec5b4f2d9d75c89f8bc8bfa8"
+from = "137f19d1d48b6d7c7901bb86729a2bce3588d4e9"
 
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
@@ -169,6 +169,12 @@ onlyIf = [ [ "stdenv", "isLinux",],]
 load = [ "glib",]
 #asNativeBuildInput = true
 from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "glibc",]
+#asNativeBuildInput = true
+from = "137f19d1d48b6d7c7901bb86729a2bce3588d4e9"
 
 # 
 # 
