@@ -10,4 +10,4 @@ cargo install --path .
 
 # backend
 cd "$FORNIX_FOLDER/packages"
-cargo tauri dev --verbose "$@"
+cargo tauri dev "$@"
