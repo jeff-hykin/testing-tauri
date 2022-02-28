@@ -69,13 +69,8 @@ load = [ "libsoup",]
 
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
-<<<<<<< HEAD
 load = [ "gtk3",]
 from = "137f19d1d48b6d7c7901bb86729a2bce3588d4e9"
-=======
-load = [ "gtk4",]
-# from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
->>>>>>> 21ae6d6f2b7b570314e56e1497f7cea41e5fc673
 
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
@@ -197,6 +192,7 @@ from = "137f19d1d48b6d7c7901bb86729a2bce3588d4e9"
 # 
 [[packages]]
 load = [ "rustc",]
+from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
 
 [[packages]]
 load = [ "libiconv",]
