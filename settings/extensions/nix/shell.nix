@@ -40,7 +40,7 @@ let
         })
     );
     rustChannel = mainPackagesIncludingRust.rustChannelOf {
-        channel = "nightly";
+        channel = "stable";
     };
     rust = (rustChannel.rust.override {
         targets = [
